@@ -1,5 +1,6 @@
 import time
-
+from random import randint
+#generate the planet class
 class Planet:
     def __init__(self, planet_name):
         self.planet_name = planet_name
@@ -31,5 +32,30 @@ class Planet:
         self.player_unobtanium = 0.0
         self.player_rare_metals = 0.0
         self.player_hydrogen = 0.0
-    
+
+        
+        #generate planets minirals and accessibility
+    def generate_planet(self, iron_amount=5000, copper_amount=3000, rare_metals_amount = 1000, unobtanium_amount = 0, hydrogen_amount = 2000):
+        self.planet_copper = copper_amount
+        self.planet_hydrogen = hydrogen_amount
+        self.planet_iron = iron_amount
+        self.planet_rare_metals = rare_metals_amount
+        self.palent_unobtanium = unobtanium_amount
+
+        self.planet_copper_accessibility = randint(1, 10) / 10
+        self.planet_iron_accessibility = randint(1, 10) / 10
+        self.planet_hydrogen_accessibility = randint(1, 10) / 10
+        self.planet_rare_metals_accessibility = randint(1, 10) / 10
+        self.palent_unobtanium_accessibility = randint(1, 10) / 10
+
+
+
+
+        #mining planets and add it to your stock on planet
+    def mine_planet(self):
+        copper_mining_value = self.miners * self.planet_copper_accessibility
+        iron_mining_value
+        pass
+
+
 

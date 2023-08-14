@@ -1,4 +1,4 @@
-import planet
+from planet import Planet
 
 class System():
     def __init__(self, system_name):
@@ -6,7 +6,7 @@ class System():
         self.planets = []
 
     def get_planet(self, planet_name = "Earth"):
-        self.planets.append(planet.Planet(planet_name))
+        self.planets.append(Planet(planet_name))
     
 
 
