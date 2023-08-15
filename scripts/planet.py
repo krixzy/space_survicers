@@ -6,7 +6,7 @@ class Planet:
         self.planet_name = planet_name
 
         #buildings
-        self.miners = 0
+        self.miners = 5
         
 
         #planets stats
@@ -46,16 +46,32 @@ class Planet:
         self.planet_iron_accessibility = randint(1, 10) / 10
         self.planet_hydrogen_accessibility = randint(1, 10) / 10
         self.planet_rare_metals_accessibility = randint(1, 10) / 10
-        self.palent_unobtanium_accessibility = randint(1, 10) / 10
+        self.planet_unobtanium_accessibility = randint(1, 10) / 10
 
 
 
 
         #mining planets and add it to your stock on planet
     def mine_planet(self):
+
+        #mining values is the amount mined every tick, deppending on diffrent facktors 
         copper_mining_value = self.miners * self.planet_copper_accessibility
-        iron_mining_value
+        iron_mining_value = self.miners * self.planet_iron_accessibility
+        rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility
+        hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility
+        unobranium_mining_value = self.miners * self.palent_unobtanium_accessibility
+
+
+
+
+        print(copper_mining_value)
         pass
 
 
+
+# earth = Planet("Earth")
+# earth.generate_planet()
+# print(earth.planet_copper, earth.planet_copper_accessibility)
+
+# earth.mine_planet()
 
