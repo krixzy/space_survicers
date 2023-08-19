@@ -6,7 +6,12 @@ class Planet:
         self.planet_name = planet_name
 
         #buildings
-        self.miners = 5
+        self.miners = 0
+        self.factorys = 0
+
+
+        #
+        self.building_power = 0
         
 
         #planets stats
