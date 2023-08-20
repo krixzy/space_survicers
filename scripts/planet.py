@@ -10,7 +10,7 @@ class Planet:
         self.factorys = 0
 
 
-        #
+        
         self.building_power = 0
         
 
