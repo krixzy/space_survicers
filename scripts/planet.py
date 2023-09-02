@@ -6,7 +6,7 @@ class Planet:
         self.planet_name = planet_name
 
         #buildings
-        self.miners = 0
+        self.miners = 5
         self.factorys = 0
 
 
@@ -17,7 +17,7 @@ class Planet:
         #planets stats
         self.planet_iron = 0.0
         self.planet_copper = 0.0
-        self.palent_unobtanium = 0.0
+        self.planet_unobtanium = 0.0
         self.planet_rare_metals = 0.0
         self.planet_hydrogen = 0.0
 
@@ -26,7 +26,7 @@ class Planet:
 
         self.planet_iron_accessibility = 0.0
         self.planet_copper_accessibility = 0.0
-        self.palent_unobtanium_accessibility = 0.0
+        self.planet_unobtanium_accessibility = 0.0
         self.planet_rare_metals_accessibility = 0.0
         self.planet_hydrogen_accessibility = 0.0
 
@@ -37,6 +37,11 @@ class Planet:
         self.player_unobtanium = 0.0
         self.player_rare_metals = 0.0
         self.player_hydrogen = 0.0
+
+
+
+        # mining power
+
 
         
         #generate planets minirals and accessibility
@@ -53,30 +58,33 @@ class Planet:
         self.planet_rare_metals_accessibility = randint(1, 10) / 10
         self.planet_unobtanium_accessibility = randint(1, 10) / 10
 
-
+        self.copper_mining_value = self.miners * self.planet_copper_accessibility
+        self.iron_mining_value = self.miners * self.planet_iron_accessibility
+        self.rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility
+        self.hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility
+        self.unobtanium_mining_value = self.miners * self.planet_unobtanium_accessibility
 
 
         #mining planets and add it to your stock on planet
     def mine_planet(self):
 
         #mining values is the amount mined every tick, deppending on diffrent facktors 
-        copper_mining_value = self.miners * self.planet_copper_accessibility
-        iron_mining_value = self.miners * self.planet_iron_accessibility
-        rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility
-        hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility
-        unobranium_mining_value = self.miners * self.palent_unobtanium_accessibility
+        self.copper_mining_value = self.miners * self.planet_copper_accessibility
+        self.iron_mining_value = self.miners * self.planet_iron_accessibility
+        self.rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility
+        self.hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility
+        self.unobranium_mining_value = self.miners * self.planet_unobtanium_accessibility
+
+
+        if(self.copper_mining_value <= self.planet_copper):
+            self.planet_copper -= self.copper_mining_value
+            self.player_copper += self.copper_mining_value
+        
 
 
 
 
-        print(copper_mining_value)
-        pass
 
-
-
-# earth = Planet("Earth")
-# earth.generate_planet()
-# print(earth.planet_copper, earth.planet_copper_accessibility)
 
 # earth.mine_planet()
 
