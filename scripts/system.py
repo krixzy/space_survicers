@@ -6,7 +6,9 @@ class System():
         self.planets = []
 
     def get_planet(self, planet_name = "Earth"):
-        self.planets.append(Planet(planet_name))
+        planet = Planet(planet_name)
+        planet.generate_resources()
+        self.planets.append(planet) 
     
 
 

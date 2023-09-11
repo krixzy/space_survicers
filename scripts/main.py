@@ -1,13 +1,15 @@
 from system import System
+from planet import Planet
+import time
+import multiprocessing
+from multiprocessing import Queue
+from game_stats import game_stats as gs
+from main_ui import Main_ui as mu
 
-class Main():
-    
-    def __init__(self):
-        self.systems = []
-    
-    def get_systems(self, system_name = "sol"):
-        system_to_add = System(system_name)
-        system_to_add.get_planet()
-        self.systems.append(system_to_add)
-        
 
+def main():
+    ui = mu()
+
+
+if __name__ == "__main__":
+    main()

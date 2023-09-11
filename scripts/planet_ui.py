@@ -6,6 +6,7 @@ from planet import Planet
 import time
 import multiprocessing
 from multiprocessing import Queue
+from game_stats import game_stats as gs
 
 
 
@@ -20,19 +21,21 @@ class planet_ui:
         self.root.config(bg="black")
 
         #inserts the top bar of buttons
-        
         self.main_planet_ui()
         self.root.after(1000, self.update_planet)
 
         self.root.mainloop()
     
 
+    def test():
+        pass
+
 
 
     def main_planet_ui(self):
 
         #top bar with all its buttons
-        self.top_frame = top_bar(self.root)
+        self.top_frame = top_bar(self.root, self)
         self.top_frame.pack(fill="x", pady= 50, padx= 40)
 
         self.main_planet_frame = tk.Frame(self.root, bg="white")
@@ -291,7 +294,7 @@ class planet_ui:
 
 def main_loop():
     earth = Planet("Earth")
-    earth.generate_planet()
+    earth.generate_resources()
 
     queue = Queue()
 

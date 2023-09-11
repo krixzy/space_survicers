@@ -1,5 +1,6 @@
 import time
 from random import randint
+from game_stats import game_stats as gs
 #generate the planet class
 class Planet:
     def __init__(self, planet_name):
@@ -45,7 +46,7 @@ class Planet:
 
         
         #generate planets minirals and accessibility
-    def generate_planet(self, iron_amount=5000, copper_amount=3000, rare_metals_amount = 1000, unobtanium_amount = 0, hydrogen_amount = 2000):
+    def generate_resources(self, iron_amount=5000, copper_amount=3000, rare_metals_amount = 1000, unobtanium_amount = 0, hydrogen_amount = 2000):
         self.planet_copper = copper_amount
         self.planet_hydrogen = hydrogen_amount
         self.planet_iron = iron_amount
@@ -58,27 +59,45 @@ class Planet:
         self.planet_rare_metals_accessibility = randint(1, 10) / 10
         self.planet_unobtanium_accessibility = randint(1, 10) / 10
 
-        self.copper_mining_value = self.miners * self.planet_copper_accessibility
-        self.iron_mining_value = self.miners * self.planet_iron_accessibility
-        self.rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility
-        self.hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility
-        self.unobtanium_mining_value = self.miners * self.planet_unobtanium_accessibility
+        self.copper_mining_value = self.miners * self.planet_copper_accessibility * gs["miners_stats"]["mining_power"]
+        self.iron_mining_value = self.miners * self.planet_iron_accessibility * gs["miners_stats"]["mining_power"]
+        self.rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility * gs["miners_stats"]["mining_power"]
+        self.hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility * gs["miners_stats"]["mining_power"]
+        self.unobtanium_mining_value = self.miners * self.planet_unobtanium_accessibility * gs["miners_stats"]["mining_power"]
 
 
         #mining planets and add it to your stock on planet
     def mine_planet(self):
 
         #mining values is the amount mined every tick, deppending on diffrent facktors 
-        self.copper_mining_value = self.miners * self.planet_copper_accessibility
-        self.iron_mining_value = self.miners * self.planet_iron_accessibility
-        self.rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility
-        self.hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility
-        self.unobranium_mining_value = self.miners * self.planet_unobtanium_accessibility
+        self.copper_mining_value = self.miners * self.planet_copper_accessibility * gs["miners_stats"]["mining_power"]
+        self.iron_mining_value = self.miners * self.planet_iron_accessibility * gs["miners_stats"]["mining_power"]
+        self.rare_metals_mining_value = self.miners * self.planet_rare_metals_accessibility * gs["miners_stats"]["mining_power"]
+        self.hydrogen_mining_value = self.miners * self.planet_hydrogen_accessibility * gs["miners_stats"]["mining_power"]
+        self.unobtanium_mining_value = self.miners * self.planet_unobtanium_accessibility * gs["miners_stats"]["mining_power"]
 
 
         if(self.copper_mining_value <= self.planet_copper):
             self.planet_copper -= self.copper_mining_value
             self.player_copper += self.copper_mining_value
+
+        if(self.iron_mining_value <= self.planet_iron):
+            self.planet_iron -= self.iron_mining_value
+            self.player_iron += self.iron_mining_value
+
+        if(self.rare_metals_mining_value <= self.planet_rare_metals):
+            self.planet_rare_metals -= self.rare_metals_mining_value
+            self.player_rare_metals += self.rare_metals_mining_value
+        
+        if(self.hydrogen_mining_value <= self.planet_hydrogen):
+            self.planet_hydrogen -= self.hydrogen_mining_value
+            self.player_hydrogen += self.hydrogen_mining_value
+        
+        
+        if(self.unobtanium_mining_value <= self.planet_unobtanium):
+            self.planet_unobtanium -= self.unobtanium_mining_value
+            self.player_unobtanium += self.unobtanium_mining_value
+            
         
 
 
