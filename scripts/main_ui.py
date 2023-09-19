@@ -49,7 +49,7 @@ class Main_ui:
         self.current_side_bar.grid(row=0, column=0, padx=15)
         self.current_main_frame.grid(row=0, column=1, padx=100, pady=50)
         for planet in self.current_system.planets:
-            planet_button = btn(self.current_main_frame, text_add=f"{planet.planet_name} \n\n Distence from sun: 0 \n\n Distence from current planet: 0", background_coller="orange")
+            planet_button = btn(self.current_main_frame, text_add=f"{planet.planet_name} \n\n Distence from sun: 0 \n\n Distence from current planet: 0 \n\n population:  ", background_coller="orange")
             planet_button.grid(row=0, column=0)
             pass        
 

@@ -5,10 +5,10 @@ def test_command():
 
 def button_creation(master, width=True, text_add="blanck", font_size=15, font_type="Arial", background_coller="white", height=2, command=test_command):
     if(width == True):
-        btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_coller,  padx=15, pady=15, command=command, justify="left")
+        btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_coller,  padx=15, pady=15, command=command, justify="center")
         return btn
     
-    btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_coller,  padx=15, pady=15, width=width, height=height, command=command, justify="left")
+    btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_coller,  padx=15, pady=15, width=width, height=height, command=command, justify="center")
     return btn
 
 
