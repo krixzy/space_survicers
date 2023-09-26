@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter_function import button_creation as btn
 from tkinter_function import create_top_bar as top_bar
 from tkinter_function import standart_text as st
+from tkinter_function import standart_build_text as sbt
 from planet import Planet
 import time
 import multiprocessing
@@ -10,33 +11,21 @@ from game_stats import game_stats as gs
 
 
 
+
 class planet_ui:
-    def __init__(self, planet, queue):
+    def __init__(self, planet, root):
         self.planet = planet
-        self.queue = queue
         self.current_frame = ""
         # create screen for planets
-        self.root = tk.Tk()
-        self.root.geometry("1700x950")
-        self.root.config(bg="black")
-
+        self.root = root
         #inserts the top bar of buttons
         self.main_planet_ui()
-        self.root.after(1000, self.update_planet)
 
-        self.root.mainloop()
     
-
-    def test():
-        pass
-
-
 
     def main_planet_ui(self):
 
         #top bar with all its buttons
-        self.top_frame = top_bar(self.root, self)
-        self.top_frame.pack(fill="x", pady= 50, padx= 40)
 
         self.main_planet_frame = tk.Frame(self.root, bg="white")
         
@@ -50,19 +39,9 @@ class planet_ui:
 
     def update_planet(self):
         try:
-            
-                if not self.queue.empty():
-                    self.planet = self.queue.get()  
-                    if(self.current_frame == "stats_frame"):
-                        self.create_planet_mining_stats_main_frame()
+             if (hasattr(self, "main_planet_frame") and self.current_frame == "stats_frame"):
+                self.create_planet_mining_stats_main_frame()
                 
-                
-                self.root.after(3000, self.update_planet)
-
-               
-
-
-
         except KeyboardInterrupt:
             print("gameendet")
 
@@ -71,12 +50,13 @@ class planet_ui:
                                                                                 
                     
     def create_planet_mining_stats_main_frame(self):
+        # if hasattr(self, "current_main_frame"):
+            # self.current_main_frame.destroy()
         self.current_frame = "stats_frame"
         self.current_main_frame = tk.Frame(self.main_planet_frame, bg="white", width=1200, height=600)
         self.current_main_frame.grid_propagate(False)
         self.current_main_frame.grid(row=0, column=1, padx=100, pady=50)
         self.mining_stats_stats_frame()
-        print(self.planet.planet_copper)
         #texts with stats from current plant
         self.planet_name = tk.Label(self.current_main_frame, text=f"Planet: {self.planet.planet_name}", font=("Arial", 20), bg="white")
         self.planet_name.grid(row=0, column=3, padx= 140)
@@ -85,6 +65,7 @@ class planet_ui:
         self.planet_miners_stats.grid(row=1, column=2, padx=140, pady=40)
 
         self.planet_mining_tech_bonus = tk.Label(self.current_main_frame, text=f"Current tech bonus: 0", font=("Arial", 14), bg="white")
+    
         self.planet_mining_tech_bonus.grid(row=1, column=4, padx=140, pady=40)
     
     def mining_stats_stats_frame(self):
@@ -243,9 +224,56 @@ class planet_ui:
 
     def create_planet_build_frame(self):
         self.current_frame = "building_frame"
-        self.current_main_frame = tk.Frame(self.main_planet_frame, bg="white", width=1200, height=700)
+        self.current_main_frame = tk.Frame(self.main_planet_frame, bg="white", width=1200, height=600)
         self.current_main_frame.grid_propagate(False)
-        self.current_main_frame.grid(row=0, column=1)
+        self.current_main_frame.grid(row=0, column=1, padx=100, pady=50)
+        self.planet_name = tk.Label(self.current_main_frame, text=f"Planet: {self.planet.planet_name}", font=("Arial", 20), bg="white")
+        self.planet_name.grid(row=0, column=3, padx= 140)
+        self.planet_miners_stats = tk.Label(self.current_main_frame, text=f"Miners: {self.planet.factory}", font=("Arial", 14), bg="white")
+        self.planet_miners_stats.grid(row=1, column=2, padx=140, pady=40)
+        self.planet_mining_tech_bonus = tk.Label(self.current_main_frame, text=f"Current tech bonus: 0", font=("Arial", 14), bg="white")
+        self.planet_mining_tech_bonus.grid(row=1, column=4, padx=140, pady=40)
+
+        self.create_main_building_frame()
+
+
+
+
+    def create_main_building_frame(self):
+        self.main_building_frame = tk.Frame(self.current_main_frame, bg="white", width=1100, height=450, borderwidth=3, relief="solid" )
+        self.main_building_frame.grid_propagate(False)
+        self.main_building_frame.grid(row=2, column=2, columnspan=3)
+        self.create_type_frame()
+        self.create_price_frame()
+
+
+    def create_type_frame(self):
+        self.building_type_fram = tk.Frame(self.main_building_frame, bg="white", height=444, width=199, borderwidth=2, relief="solid")
+        self.building_type_fram.grid_propagate(False)
+        self.building_type_fram.grid(row=0, column=0)
+
+        self.building_type = tk.Label(self.building_type_fram, text="Type", bg="white", font=("Arial", 14), borderwidth=2, relief="solid", width=20, height=2)
+        self.building_type.grid(row=0, column=0)
+
+    def create_price_frame(self):
+        self.building_price_frame = tk.Frame(self.main_building_frame, bg="white", height=444, width=199, borderwidth=2, relief="solid")
+        self.building_price_frame.grid_propagate(False)
+        self.building_price_frame.grid(row=0, column=1)
+
+    def create_build_amount_frame(self):
+        pass
+
+
+    def create_current_amount_frame(self):
+
+        pass
+
+
+    def create_build_button_frame(self):
+        
+
+        pass
+
 
 
 
@@ -282,6 +310,8 @@ class planet_ui:
         return self.planet_sidebar_frame
         
 
+    def destroy(self):
+        self.main_planet_frame.destroy()
 
 
 
@@ -292,28 +322,6 @@ class planet_ui:
 
 
 
-def main_loop():
-    earth = Planet("Earth")
-    earth.generate_resources()
-
-    queue = Queue()
-
-
-    process1 = multiprocessing.Process(target=planet_ui, args=(earth, queue))
-    process2 = multiprocessing.Process(target=game_engine, args=(earth, queue))
-
-    process2.start()
-    process1.start()
-
-    process1.join()
-    process2.terminate()  # Afslutter spilmotoren
-def game_engine(planet, queue):
-    while True:
-        time.sleep(6)
-        planet.mine_planet()
-        queue.put(planet)
-        
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
-    main_loop()

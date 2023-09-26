@@ -1,14 +1,14 @@
-import time
 from random import randint
 from game_stats import game_stats as gs
+
 #generate the planet class
 class Planet:
     def __init__(self, planet_name):
         self.planet_name = planet_name
 
         #buildings
-        self.miners = 5
-        self.factorys = 0
+        self.miners = 1
+        self.factory = 1
 
 
         
@@ -80,23 +80,36 @@ class Planet:
         if(self.copper_mining_value <= self.planet_copper):
             self.planet_copper -= self.copper_mining_value
             self.player_copper += self.copper_mining_value
+            self.planet_copper = round(self.planet_copper, 1)
+            self.player_copper = round(self.player_copper, 1)
 
         if(self.iron_mining_value <= self.planet_iron):
             self.planet_iron -= self.iron_mining_value
             self.player_iron += self.iron_mining_value
+            self.planet_iron = round(self.planet_iron, 1)
+            self.player_iron = round(self.player_iron, 1)
 
         if(self.rare_metals_mining_value <= self.planet_rare_metals):
             self.planet_rare_metals -= self.rare_metals_mining_value
             self.player_rare_metals += self.rare_metals_mining_value
-        
+            self.planet_rare_metals = round(self.planet_rare_metals, 1)
+            self.player_rare_metals = round(self.player_rare_metals, 1)
+
+
+
         if(self.hydrogen_mining_value <= self.planet_hydrogen):
             self.planet_hydrogen -= self.hydrogen_mining_value
             self.player_hydrogen += self.hydrogen_mining_value
-        
-        
+            self.planet_hydrogen = round(self.planet_hydrogen, 1)
+            self.player_hydrogen = round(self.player_hydrogen, 1)
+    
+
+
         if(self.unobtanium_mining_value <= self.planet_unobtanium):
             self.planet_unobtanium -= self.unobtanium_mining_value
             self.player_unobtanium += self.unobtanium_mining_value
+            self.planet_unobtanium = round(self.palent_unobtanium, 1)
+            self.player_unobtanium = round(self.player_unobtanium, 1)
             
         
 

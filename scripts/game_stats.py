@@ -1,4 +1,5 @@
 game_stats = {
+    "systems": [],
     "miners_stats":{
         "mining_power": 1,
         "miners_price":{
