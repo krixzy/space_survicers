@@ -135,30 +135,6 @@ class planet_ui:
 
         pass
 
-    # def build_current_main_frame(self, array_of_values, building_type, building_tech, text_size = 14, label_with = 100, label_height = 5, colummens_amount = 5):
-    #     self.current_main_frame = tk.Frame(self.main_planet_frame, bg="white", width=1200, height=650)
-    #     self.current_main_frame.grid_propagate(False)
-    #     self.current_main_frame.grid(row=0, column=1, padx=50, pady=10)
-    #      #texts with stats from current plant
-    #     self.planet_name = tk.Label(self.current_main_frame, text=f"Planet: {self.planet.planet_name}", font=("Arial", 20), bg="white")
-    #     self.planet_name.grid(row=0, column=3, padx= 140)
-
-    #     self.planet_miners_stats = tk.Label(self.current_main_frame, text=building_type, font=("Arial", 16), bg="white")
-    #     self.planet_miners_stats.grid(row=1, column=2, padx=100, pady=10)
-
-    #     self.planet_mining_tech_bonus = tk.Label(self.current_main_frame, text=building_tech, font=("Arial", 16), bg="white")
-    
-    #     self.planet_mining_tech_bonus.grid(row=1, column=4, padx=100, pady=10)
-    #     #creating the resources frame
-    #     self.resource_frame = tk.Frame(self.current_main_frame, bg="white", width=1200, height=550, borderwidth=3, relief="solid" )
-    #     self.resource_frame.grid_propagate(False)
-    #     self.resource_frame.grid(row=2, column=2, columnspan=3)
-    #     for index, array in enumerate(array_of_values):
-    #         self.create_label_column(self.resource_frame, index, array, label_height, label_with, text_size)
-        
-            
-        
-
 
 
 
