@@ -17,8 +17,8 @@ def main():
 
 def main_loop():
 
-    cProfile.run("mu()", sort="cumulative")
-    # game = mu()
+    # cProfile.run("mu()", sort="cumulative")
+    game = mu()
 
 
 

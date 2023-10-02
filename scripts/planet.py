@@ -1,5 +1,6 @@
 from random import randint
 from game_stats import game_stats as gs
+from building_order import Building_order
 
 #generate the planet class
 class Planet:
@@ -9,6 +10,7 @@ class Planet:
         #buildings
         self.miners = 1
         self.factory = 1
+        self.building_orders = []
 
 
         
@@ -46,7 +48,7 @@ class Planet:
 
         
         #generate planets minirals and accessibility
-    def generate_resources(self, iron_amount=5000, copper_amount=3000, rare_metals_amount = 1000, unobtanium_amount = 0, hydrogen_amount = 2000):
+    def generate_resources(self, iron_amount=5000, copper_amount=5000, rare_metals_amount = 1000, unobtanium_amount = 0, hydrogen_amount = 2000):
         self.planet_copper = copper_amount
         self.planet_hydrogen = hydrogen_amount
         self.planet_iron = iron_amount
@@ -67,6 +69,11 @@ class Planet:
 
 
         #mining planets and add it to your stock on planet
+
+    def create_building_order(self, building_to_build, amount):
+        self.building_orders.append(Building_order(building_to_build, amount))
+        pass
+    
     def mine_planet(self):
 
         #mining values is the amount mined every tick, deppending on diffrent facktors 
@@ -111,7 +118,16 @@ class Planet:
             self.planet_unobtanium = round(self.palent_unobtanium, 1)
             self.player_unobtanium = round(self.player_unobtanium, 1)
             
-        
+    
+
+
+
+
+    def build(self):
+        pass
+
+
+
 
 
 

@@ -61,7 +61,7 @@ class Main_ui:
                 self.current_planet_ui.update_planet()
         except NameError as e:
             print(NameError)    
-        self.root.after(2000, self.game_loop)
+        self.root.after(4000, self.game_loop)
         
 
 
@@ -108,15 +108,15 @@ class Main_ui:
         pass
 
     def get_system(self, system_name = "Milky way"):
-        new_system = System(system_name, 10, -10)
+        new_system = System(system_name, 100, -100)
         new_system.get_planet()
         gs["systems"].append(new_system)
 
 
     def delete_current_main_fram(self):
         if hasattr(self, "current_planet_ui"):
-            
-            self.__dict__.pop(self.current_planet_ui, None)
+            self.current_planet_ui.destroy()
+            del self.current_planet_ui
             
         if hasattr(self, "current_main_frame"):
             self.current_main_frame.destroy()
