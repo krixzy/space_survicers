@@ -57,6 +57,7 @@ class Main_ui:
             for systems in gs["systems"]:
               for planets in systems.planets:
                     planets.mine_planet()
+                    planets.build()
             if hasattr(self, "current_planet_ui"):
                 self.current_planet_ui.update_planet()
         except NameError as e:
@@ -103,7 +104,6 @@ class Main_ui:
     def change_current_planet_ui(self):
         self.delete_current_main_fram()
         self.current_planet_ui = planet_ui(self.current_planet, self.root)
-
 
         pass
 

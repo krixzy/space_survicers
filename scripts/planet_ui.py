@@ -12,7 +12,6 @@ from game_stats import game_stats as gs
 
 
 
-
 class planet_ui:
     def __init__(self, planet, root):
         self.planet = planet
@@ -20,7 +19,6 @@ class planet_ui:
         # create screen for planets
         self.root = root
         #inserts the top bar of buttons
-        self.text_list = []
         
 
 
@@ -52,17 +50,14 @@ class planet_ui:
     def update_planet(self):
         try:
              if (hasattr(self, "main_planet_frame") and self.current_frame == "stats_frame"):
-
                 self.mining_stats_page()
-                pass
-        except KeyboardInterrupt:
-            print("gameendet")
+        except NameError:
+            print(f"gameendet{NameError}")
 
-#_______________________________________________________________________________________________________________________________________________________________________
-                                                                                #current main frame builder
-                                                                                
-                    
 
+
+#___________________________________________________________________________________________________________________________________________________________________________________________________
+                                                                            #alle button commands
 
 
     def mining_stats_page(self):
@@ -73,8 +68,6 @@ class planet_ui:
             ["L",["Mining power", self.planet.copper_mining_value, self.planet.iron_mining_value, self.planet.rare_metals_mining_value, self.planet.hydrogen_mining_value, self.planet.unobtanium_mining_value]],
             ["L",["Player", self.planet.player_copper, self.planet.player_iron, self.planet.player_rare_metals, self.planet.player_hydrogen, self.planet.player_unobtanium]]
                 ]
-        if hasattr(self, "current_main_frame"):
-            self.current_main_frame.destroy()
         self.current_frame = "stats_frame"
         self.build_current_main_frame(array_of_values, f"Miners: {self.planet.miners}", f"Current tech bonus: 0" )
 
@@ -82,21 +75,33 @@ class planet_ui:
 
     def buidling_stats_page(self):
         planet_building_info_array = [
-            ["L", ["Type", "Mines", "Factorys"]],
-            ["L", ["Current amount",self.planet.miners, self.planet.factory]],
-            ["L", ["Price", self.object_price_converter(gs["miners_stats"]["miners_price"]), self.object_price_converter(gs["factory_stats"]["factory_price"])]],
-            ["E", ["Order_amount", "dontmatter", "dontmatter"]],
-            ["B", ["Build"]]
+            ["L", ["Type", "Mines", "Factorys", "science_centre", "space_ports"]],
+            ["L", ["Current amount",self.planet.miners, self.planet.factory, self.planet.science_centre, self.planet.space_port]],
+            ["L", ["Price", self.object_price_converter(gs["miners_stats"]["miners_price"]), self.object_price_converter(gs["factory_stats"]["factory_price"]),self.object_price_converter(gs["science_centre_stats"]["science_centre_price"]),self.object_price_converter(gs["space_port_stats"]["space_port_price"])]],
+            ["E", ["Order_amount", " ", " ", " ", " "]],
+            ["B", ["Build", lambda:self.planet.create_building_order("miners", self.planet.entry_value[0], self), lambda: self.planet.create_building_order("factory", self.planet.entry_value[1], self), lambda: self.planet.create_building_order("science_centre", self.planet.entry_value[2], self), lambda: self.planet.create_building_order("space_port", self.planet.entry_value[3], self)]]
         ]
-        if hasattr(self, "current_main_frame"):
-            self.current_main_frame.destroy()
+        self.Check_for_main_frame()
         self.current_frame = "building_frame"
-        self.build_current_main_frame(planet_building_info_array, f"Factorys: {self.planet.factory}", f"Current tech bonus: 0", text_size=14)
-        pass
+        self.build_current_main_frame(planet_building_info_array, f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", text_size=14)
+
+
+    def building_order_page(self):
+        self.Check_for_main_frame()
+        self.current_frame = "building_order_frame"
+        self.build_current_main_frame( self.planet.building_orders,f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", text_size=14, type="row")
 
 
 
-    def build_current_main_frame(self, array_of_values, building_type, building_tech, text_size = 14, label_with = 100, label_height = 5):
+
+
+
+#_______________________________________________________________________________________________________________________________________________________________________
+                                                                                #current main frame builder
+                                                                                
+
+
+    def build_current_main_frame(self, array_of_values, building_type, building_tech, text_size = 14, type = "cul", label_with = 100, label_height = 5):
         self.current_main_frame = tk.Frame(self.main_planet_frame, bg="white", width=1250, height=650)
         self.current_main_frame.grid_propagate(False)
         self.current_main_frame.grid(row=0, column=1, padx=50, pady=10)
@@ -109,14 +114,26 @@ class planet_ui:
 
         self.planet_mining_tech_bonus = tk.Label(self.current_main_frame, text=building_tech, font=("Arial", 16), bg="white")
         self.planet_mining_tech_bonus.grid(row=1, column=4, padx=100, pady=10)
-        frame_height = len(array_of_values[0][1]) * 100
-        print(frame_height)
-        self.create_canves(frame_height)
-        for index, array in enumerate(array_of_values):
-            self.create_label_column(self.resource_frame, frame_height, index, array, label_height, label_with, text_size)
+
+
+        if(type == "cul"):
+            frame_height = len(array_of_values[0][1]) * 100
+            self.create_canves(frame_height)
+            for index, array in enumerate(array_of_values):
+                self.create_label_column(self.resource_frame, frame_height, index, array, label_height, label_with, text_size)
+        
+        if(type == "row"):
+            frame_height = len(array_of_values) * 50
+            if(frame_height > 0):
+                self.create_canves(frame_height)
+                for index, item in enumerate(array_of_values):
+                    self.create_label_row(self.resource_frame, frame_height, item, index)
+
+            else:
+                pass
+
         
         
-        pass
 
 
     def create_canves(self, frame_height):
@@ -133,7 +150,17 @@ class planet_ui:
         self.canvas.create_window((0,0), window=self.resource_frame, anchor="nw")
 
 
-        pass
+
+
+
+    def create_label_row(self, master, frame_height, item, index):
+        current_frame = tk.Frame(master, bg="white", borderwidth=2, relief="solid", height=50, width=1199)
+        current_frame.grid_propagate(False)
+        current_frame.grid(row=index, column=0)
+        current_label = tk.Label(current_frame, bg="white", text= f"Order: {index}               Building type: {item.buildings_to_build}               Current order amount: {item.amount}               Current factorys assigned: {item.factory_assigned}              ", font=("Arial", 14)).grid(row=0, column=0, padx=10)
+        current_plus_button = tk.Button(current_frame,  bg="orange", text= "+", font=("Arial", 20), command=lambda: item.add_factory(self)).grid(row=0, column=1)
+        current_minus_button = tk.Button(current_frame, bg="orange", text="-", font=("Arial", 20), command=lambda: item.remove_factory(self)).grid(row=0, column=2)
+
 
 
 
@@ -158,9 +185,11 @@ class planet_ui:
     def create_label(self, row, value, master, label_height, label_with, text_size):
         if(row == 0):
             master.grid_columnconfigure(row, weight=1)
+           
             player_header = tk.Label(master, bg="white", borderwidth=2, relief="solid", width=50, height=2, font=("Arial", text_size), text=value)
-            player_header.grid(row=row, column=0)
+            player_header.grid(row=row, column=0, )
         else:
+            master.grid_columnconfigure(row, weight=1)
             master.grid_rowconfigure(row, weight=1)
             player_label = tk.Label(master, bg="white", font=("Arial", text_size), text=value)               
             player_label.grid(row=row, column=0)
@@ -170,28 +199,52 @@ class planet_ui:
     def create_button(self, row, value, master, label_height, label_with, text_size):
         if(row == 0):
             master.grid_columnconfigure(row, weight=1)
+            
             player_header = tk.Label(master, bg="white", borderwidth=2, relief="solid", width=50, height=2, font=("Arial", text_size), text=value)
             player_header.grid(row=row, column=0)
         else:
+            master.grid_columnconfigure(row, weight=1)
             master.grid_rowconfigure(row, weight=1)
-            player_button = tk.Button(master, bg="white",  font=("Arial", text_size), text="Build", command=value)
+            player_button = tk.Button(master, bg="orange",  font=("Arial", text_size), text="Build", command=value)
             player_button.grid(row=row, column=0)
     
 
     def create_entry(self, row, value, master, label_height, label_with, text_size):
         if(row == 0):
             master.grid_columnconfigure(row, weight=1)
+           
             player_header = tk.Label(master, bg="white", borderwidth=2, relief="solid", width=50, height=2, font=("Arial", text_size), text=value)
             player_header.grid(row=row, column=0)
         else:
+            master.grid_columnconfigure(row, weight=1)
             master.grid_rowconfigure(row, weight=1)
-            player_entry_text = ""
-            player_entry = tk.Entry(master, bg="white", font=("Arial", text_size), text=player_entry_text)
+            player_entry = tk.Entry(master, bg="white")
             player_entry.grid(row=row, column=0)
-            self.text_list.append(player_entry_text)
+            self.planet.entry_value[row - 1] = player_entry
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-#                                                                                                                 sidd bar
+#                                                                                                                 side bar
 
 
 
@@ -211,12 +264,16 @@ class planet_ui:
         
 
         #stats button
-        self.stats_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Mining stats", width=15, command=lambda:self.mining_stats_page(), font_size= 14)
+        self.stats_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Mining stats", width=15, command=lambda:self.mining_stats_page())
         self.button_list.append(self.stats_button)
 
         #build button
         self.build_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Build", width=15, command=lambda:self.buidling_stats_page())
         self.button_list.append(self.build_button)
+        
+                
+        self.build_order_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Building orders", width=15, command=lambda:self.building_order_page())
+        self.button_list.append(self.build_order_button)
 
         #Technologies button
         self.Technologies_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Technologies", width=15)
@@ -228,12 +285,19 @@ class planet_ui:
         
 
         for index, buttons in enumerate(self.button_list):
-           buttons.grid(row=index, column=0, pady=30)
+           buttons.grid(row=index, column=0, pady=20)
         
         self.planet_sidebar_frame.grid(row=0, column=0, padx=15)
         return self.planet_sidebar_frame
         
 
+
+
+
+
+
+#_________________________________________________________________________________________________________________________________________________________________________________________________________________________
+                                                                                            #Extra small methods
 
     def object_price_converter(self, price_array):
         return_string = f""
@@ -244,7 +308,10 @@ class planet_ui:
 
 
 
-
+    def Check_for_main_frame(self):
+        if hasattr(self, "current_main_frame"):
+            self.current_main_frame.destroy()
+        
 
 
 
@@ -265,5 +332,26 @@ class planet_ui:
 
 
 
-if __name__ == "__main__":
-    multiprocessing.freeze_support()
+
+    
+
+    def create_popup_screen(self, popup_text):
+        try:
+            
+            popup_root =tk.Tk()
+            popup_root.geometry("350x50")
+            popup_root.config(bg="white")
+            win_x, win_y = popup_root.winfo_pointerxy()
+            popup_root.geometry(f"+{win_x // 2}+{win_y // 2}")
+            tk.Label(popup_root, text=popup_text, font=("Arial", 25), bg="white").pack()
+            popup_root.after(500, popup_root.destroy)
+            popup_root.mainloop()
+
+
+            
+        except NameError:
+            print(f"popup screen not working {NameError}")
+
+
+
+

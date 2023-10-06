@@ -9,7 +9,8 @@ class System():
 
     def get_planet(self, planet_name = "Earth"):
         planet = Planet(planet_name)
-        planet.generate_resources()
+        planet.generate_planet(True)
+        
         self.planets.append(planet) 
     
 
