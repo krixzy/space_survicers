@@ -19,14 +19,14 @@ game_stats = {
         "factory_waight": 5000
         
     },
-    "science_centre_stats":{
-        "science_centre_building_power_cost": 2200,
-        "science_centre_price":{
+    "science_center_stats":{
+        "science_center_building_power_cost": 2200,
+        "science_center_price":{
             "copper":250,
             "iron":500,
             "rare_metals": 100
         },
-        "science_centre_waight":25000
+        "science_center_waight":25000
     },
     "space_port_stats":{
         "space_port_building_power_cost": 1500,

@@ -14,6 +14,8 @@ from system import System
 class Main_ui:
     def __init__(self):
         self.full_systems = []
+        self.list_of_ships = []
+        self.ship_blueprint_list = []
         self.get_system()
 
         self.current_system = gs["systems"][0]

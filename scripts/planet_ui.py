@@ -49,8 +49,10 @@ class planet_ui:
 
     def update_planet(self):
         try:
-             if (hasattr(self, "main_planet_frame") and self.current_frame == "stats_frame"):
+            if (hasattr(self, "main_planet_frame") and self.current_frame == "stats_frame"):
                 self.mining_stats_page()
+            if (hasattr(self, "main_planet_frame") and self.current_frame == "building_order_frame"):
+                self.building_order_page()
         except NameError:
             print(f"gameendet{NameError}")
 
@@ -69,27 +71,28 @@ class planet_ui:
             ["L",["Player", self.planet.player_copper, self.planet.player_iron, self.planet.player_rare_metals, self.planet.player_hydrogen, self.planet.player_unobtanium]]
                 ]
         self.current_frame = "stats_frame"
-        self.build_current_main_frame(array_of_values, f"Miners: {self.planet.miners}", f"Current tech bonus: 0" )
+        self.build_current_main_frame(array_of_values, f"Miners: {self.planet.miners}", f"Current tech bonus: 0", f"mining power pr miners {gs['miners_stats']['mining_power']}" )
 
 
 
     def buidling_stats_page(self):
         planet_building_info_array = [
-            ["L", ["Type", "Mines", "Factorys", "science_centre", "space_ports"]],
-            ["L", ["Current amount",self.planet.miners, self.planet.factory, self.planet.science_centre, self.planet.space_port]],
-            ["L", ["Price", self.object_price_converter(gs["miners_stats"]["miners_price"]), self.object_price_converter(gs["factory_stats"]["factory_price"]),self.object_price_converter(gs["science_centre_stats"]["science_centre_price"]),self.object_price_converter(gs["space_port_stats"]["space_port_price"])]],
+            ["L", ["Type", "Mines", "Factorys", "science_center", "space_ports"]],
+            ["L", ["Current amount",self.planet.miners, self.planet.factory, self.planet.science_center, self.planet.space_port]],
+            ["L", ["Building power cost", gs["miners_stats"]["miners_building_power_cost"], gs["factory_stats"]["factory_building_power_cost"], gs["science_center_stats"]["science_center_building_power_cost"], gs["space_port_stats"]["space_port_building_power_cost"]]],
+            ["L", ["Price", self.object_price_converter(gs["miners_stats"]["miners_price"]), self.object_price_converter(gs["factory_stats"]["factory_price"]),self.object_price_converter(gs["science_center_stats"]["science_center_price"]),self.object_price_converter(gs["space_port_stats"]["space_port_price"])]],
             ["E", ["Order_amount", " ", " ", " ", " "]],
-            ["B", ["Build", lambda:self.planet.create_building_order("miners", self.planet.entry_value[0], self), lambda: self.planet.create_building_order("factory", self.planet.entry_value[1], self), lambda: self.planet.create_building_order("science_centre", self.planet.entry_value[2], self), lambda: self.planet.create_building_order("space_port", self.planet.entry_value[3], self)]]
+            ["B", ["Build", lambda:self.planet.create_building_order("miners", self.planet.entry_value[0], self), lambda: self.planet.create_building_order("factory", self.planet.entry_value[1], self), lambda: self.planet.create_building_order("science_center", self.planet.entry_value[2], self), lambda: self.planet.create_building_order("space_port", self.planet.entry_value[3], self)]]
         ]
         self.Check_for_main_frame()
         self.current_frame = "building_frame"
-        self.build_current_main_frame(planet_building_info_array, f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", text_size=14)
+        self.build_current_main_frame(planet_building_info_array, f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", f"building power pr facotry {gs['factory_stats']['factory_building_power']}", text_size=14)
 
 
     def building_order_page(self):
         self.Check_for_main_frame()
         self.current_frame = "building_order_frame"
-        self.build_current_main_frame( self.planet.building_orders,f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", text_size=14, type="row")
+        self.build_current_main_frame( self.planet.building_orders,f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", f"building power pr facotry {gs['factory_stats']['factory_building_power']}", text_size=14, type="row")
 
 
 
@@ -101,7 +104,7 @@ class planet_ui:
                                                                                 
 
 
-    def build_current_main_frame(self, array_of_values, building_type, building_tech, text_size = 14, type = "cul", label_with = 100, label_height = 5):
+    def build_current_main_frame(self, array_of_values, building_type, building_tech, building_power, text_size = 14, type = "cul", label_with = 100, label_height = 5):
         self.current_main_frame = tk.Frame(self.main_planet_frame, bg="white", width=1250, height=650)
         self.current_main_frame.grid_propagate(False)
         self.current_main_frame.grid(row=0, column=1, padx=50, pady=10)
@@ -112,6 +115,9 @@ class planet_ui:
         self.planet_miners_stats = tk.Label(self.current_main_frame, text=building_type, font=("Arial", 16), bg="white")
         self.planet_miners_stats.grid(row=1, column=2, padx=100, pady=10)
 
+        middle_labels = tk.Label(self.current_main_frame, text=building_power, font=("Arial", 16), bg="white")
+        middle_labels.grid(row=1, column=3, padx=100, pady=10)  
+
         self.planet_mining_tech_bonus = tk.Label(self.current_main_frame, text=building_tech, font=("Arial", 16), bg="white")
         self.planet_mining_tech_bonus.grid(row=1, column=4, padx=100, pady=10)
 
@@ -120,7 +126,7 @@ class planet_ui:
             frame_height = len(array_of_values[0][1]) * 100
             self.create_canves(frame_height)
             for index, array in enumerate(array_of_values):
-                self.create_label_column(self.resource_frame, frame_height, index, array, label_height, label_with, text_size)
+                self.create_label_column(self.resource_frame, frame_height, index, array, label_height, label_with, text_size, len(array_of_values))
         
         if(type == "row"):
             frame_height = len(array_of_values) * 50
@@ -157,16 +163,17 @@ class planet_ui:
         current_frame = tk.Frame(master, bg="white", borderwidth=2, relief="solid", height=50, width=1199)
         current_frame.grid_propagate(False)
         current_frame.grid(row=index, column=0)
-        current_label = tk.Label(current_frame, bg="white", text= f"Order: {index}               Building type: {item.buildings_to_build}               Current order amount: {item.amount}               Current factorys assigned: {item.factory_assigned}              ", font=("Arial", 14)).grid(row=0, column=0, padx=10)
-        current_plus_button = tk.Button(current_frame,  bg="orange", text= "+", font=("Arial", 20), command=lambda: item.add_factory(self)).grid(row=0, column=1)
-        current_minus_button = tk.Button(current_frame, bg="orange", text="-", font=("Arial", 20), command=lambda: item.remove_factory(self)).grid(row=0, column=2)
+        tk.Label(current_frame, bg="white", text= f"Order: {index}               Building type: {item.buildings_to_build}               Current order amount: {item.amount}               Current factorys assigned: {item.factory_assigned}              ", font=("Arial", 14)).grid(row=0, column=0, padx=10)
+        tk.Button(current_frame,  bg="orange", text= "+", font=("Arial", 20), command=lambda: item.add_factory(self)).grid(row=0, column=1)
+        tk.Button(current_frame, bg="orange", text="-", font=("Arial", 20), command=lambda: item.remove_factory(self)).grid(row=0, column=2)
+        tk.Label(current_frame, bg="white", text=f"   {item.building_percentage}%", font=("Arial", 14)).grid(row=0, column=3)
 
 
 
 
 
-    def create_label_column(self, master, frame_height, columns, value_array, label_height, label_with, text_size):
-        current_frame = tk.Frame(master, bg="white", borderwidth=2, relief="solid", height=frame_height - 50, width=239)
+    def create_label_column(self, master, frame_height, columns, value_array, label_height, label_with, text_size, columns_amount):
+        current_frame = tk.Frame(master, bg="white", borderwidth=2, relief="solid", height=frame_height - 50, width=1199 / columns_amount)
         current_frame.grid_propagate(False)
         current_frame.grid(row=0, column=columns)
         if(value_array[0] == "L"):
@@ -342,7 +349,7 @@ class planet_ui:
             popup_root.geometry("350x50")
             popup_root.config(bg="white")
             win_x, win_y = popup_root.winfo_pointerxy()
-            popup_root.geometry(f"+{win_x // 2}+{win_y // 2}")
+            popup_root.geometry(f"+{win_x}+{win_y}")
             tk.Label(popup_root, text=popup_text, font=("Arial", 25), bg="white").pack()
             popup_root.after(500, popup_root.destroy)
             popup_root.mainloop()

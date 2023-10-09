@@ -10,12 +10,11 @@ class Planet:
         #buildings
         self.miners = 10
         self.factory = 100
-        self.science_centre = 0
+        self.science_center = 0
         self.space_port = 0
         self.building_orders = []
 
         
-        self.building_power = 0
         
 
         #planets stats
@@ -43,13 +42,14 @@ class Planet:
         self.player_hydrogen = 0.0
 
 
-
+        self.x_position = 0
+        self.y_position = 0
         # mining power
 
 
         
         #generate planets minirals and accessibility
-    def generate_planet(self, first, iron_amount=5000, copper_amount=5000, rare_metals_amount = 1000, unobtanium_amount = 0, hydrogen_amount = 2000 ):
+    def generate_planet(self, first, iron_amount=5000, copper_amount=5000, rare_metals_amount = 1000, unobtanium_amount = 0, hydrogen_amount = 2000, x_position = 10, y_position = 10  ):
         
 
 
@@ -65,10 +65,14 @@ class Planet:
             self.planet_hydrogen_accessibility = 1
             self.planet_rare_metals_accessibility = 0.5
             self.planet_unobtanium_accessibility = 0.1
+            self.x_position = 1000
+            self.y_position = -1000
             pass
 
 
         else:
+            self.x_position = x_position
+            self.y_position = y_position
             self.planet_copper = copper_amount
             self.planet_hydrogen = hydrogen_amount
             self.planet_iron = iron_amount
@@ -190,6 +194,8 @@ class Planet:
         except NameError:
             print(f"trying to run build in planet, but this went worng {NameError}")
         pass
+
+
 
     def kill_order(self, incoming_id):
         try:
