@@ -84,7 +84,7 @@ class Main_ui:
                 y += 1
                 x = 0
             x+=1
-            planet_button = btn(self.current_main_frame, command=self.change_current_planet_ui ,text_add=f"{planet.planet_name} \n\n Distence from sun: 0 \n\n Distence from current planet: 0 \n\n population:  ", background_coller="orange")
+            planet_button = btn(self.current_main_frame, command=self.change_current_planet_ui ,text_add=f"{planet.planet_name} \n\n Distence from sun: 0 \n\n Distence from current planet: 0", background_color="orange")
             planet_button.grid(row=y, column=x ,padx=20, pady=10)
             pass        
 

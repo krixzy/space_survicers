@@ -9,9 +9,10 @@ class Planet:
 
         #buildings
         self.miners = 10
-        self.factory = 100
+        self.factory = 10
+        self.total_factory = 10
         self.science_center = 0
-        self.space_port = 0
+        self.space_port = 2
         self.building_orders = []
 
         
@@ -200,7 +201,6 @@ class Planet:
     def kill_order(self, incoming_id):
         try:
             for index, object_to_kill in enumerate(self.building_orders):
-                print(object_to_kill)
                 if id(object_to_kill) == incoming_id:
                     self.building_orders.pop(index)
         

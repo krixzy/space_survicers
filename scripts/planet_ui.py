@@ -78,7 +78,7 @@ class planet_ui:
     def buidling_stats_page(self):
         planet_building_info_array = [
             ["L", ["Type", "Mines", "Factorys", "science_center", "space_ports"]],
-            ["L", ["Current amount",self.planet.miners, self.planet.factory, self.planet.science_center, self.planet.space_port]],
+            ["L", ["Current amount",self.planet.miners, self.planet.total_factory, self.planet.science_center, self.planet.space_port]],
             ["L", ["Building power cost", gs["miners_stats"]["miners_building_power_cost"], gs["factory_stats"]["factory_building_power_cost"], gs["science_center_stats"]["science_center_building_power_cost"], gs["space_port_stats"]["space_port_building_power_cost"]]],
             ["L", ["Price", self.object_price_converter(gs["miners_stats"]["miners_price"]), self.object_price_converter(gs["factory_stats"]["factory_price"]),self.object_price_converter(gs["science_center_stats"]["science_center_price"]),self.object_price_converter(gs["space_port_stats"]["space_port_price"])]],
             ["E", ["Order_amount", " ", " ", " ", " "]],
@@ -86,25 +86,34 @@ class planet_ui:
         ]
         self.Check_for_main_frame()
         self.current_frame = "building_frame"
-        self.build_current_main_frame(planet_building_info_array, f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", f"building power pr facotry {gs['factory_stats']['factory_building_power']}", text_size=14)
+        self.build_current_main_frame(planet_building_info_array, f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", f"building power pr factory {gs['factory_stats']['factory_building_power']}", text_size=14)
 
 
     def building_order_page(self):
         self.Check_for_main_frame()
         self.current_frame = "building_order_frame"
-        self.build_current_main_frame( self.planet.building_orders,f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", f"building power pr facotry {gs['factory_stats']['factory_building_power']}", text_size=14, type="row")
+        self.build_current_main_frame( self.planet.building_orders,f"Free factorys: {self.planet.factory}", f"Current tech bonus: 0", f"building power pr factory {gs['factory_stats']['factory_building_power']}", text_size=14, type="row")
 
 
 
+    def ship_building_page(self):
+        self.Check_for_main_frame()
+        self.current_frame = "ship_building_frame"
+        self.build_current_main_frame(["test, test"], f"Free space ports: {self.planet.space_port}", f"Current tech bonus: 0", f"building power pr space port: {gs['space_port_stats']['space_port_building_power']}", type="build_ship" )
 
 
+    def ship_design_page(self):
+        self.Check_for_main_frame()
+        self.current_frame = "ship_design_frame"
+        design_array = ["", "Design ship"]
+        self.build_current_main_frame(["Design options", lambda: self.design_page_popup(design_array[1])], f"Free space ports: {self.planet.space_port}", f"Current tech bonus: 0", f"building power pr space port: {gs['space_port_stats']['space_port_building_power']}", type="design_ship", design_array = design_array)
 
-#_______________________________________________________________________________________________________________________________________________________________________
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________
                                                                                 #current main frame builder
                                                                                 
 
 
-    def build_current_main_frame(self, array_of_values, building_type, building_tech, building_power, text_size = 14, type = "cul", label_with = 100, label_height = 5):
+    def build_current_main_frame(self, array_of_values, building_type, building_tech, building_power, text_size = 14, type = "cul", design_array = None):
         self.current_main_frame = tk.Frame(self.main_planet_frame, bg="white", width=1250, height=650)
         self.current_main_frame.grid_propagate(False)
         self.current_main_frame.grid(row=0, column=1, padx=50, pady=10)
@@ -124,28 +133,35 @@ class planet_ui:
 
         if(type == "cul"):
             frame_height = len(array_of_values[0][1]) * 100
-            self.create_canves(frame_height)
+            self.create_canves(frame_height, self.current_main_frame)
             for index, array in enumerate(array_of_values):
-                self.create_label_column(self.resource_frame, frame_height, index, array, label_height, label_with, text_size, len(array_of_values))
+                self.create_label_column(self.resource_frame, frame_height, index, array, text_size, len(array_of_values))
         
         if(type == "row"):
             frame_height = len(array_of_values) * 50
             if(frame_height > 0):
-                self.create_canves(frame_height)
+                self.create_canves(frame_height, self.current_main_frame)
                 for index, item in enumerate(array_of_values):
                     self.create_label_row(self.resource_frame, frame_height, item, index)
-
             else:
                 pass
+        if(type == "design_ship"):
+            self.create_canves(600, self.current_main_frame)
+            current_frame = tk.Frame(self.resource_frame, bg="white", borderwidth=2, relief="solid", height=550, width=1199 / 6)
+            current_frame.grid_propagate(False)
+            current_frame.grid(row=0, column=0)
+            for index, item in enumerate(array_of_values):
+                self.create_button(index, item, current_frame, text_size, design_array[index]   )
+
 
         
         
 
 
-    def create_canves(self, frame_height):
-        self.canvas = tk.Canvas(self.current_main_frame, height=600, width=1200)
+    def create_canves(self, frame_height, master):
+        self.canvas = tk.Canvas(master, height=600, width=1200)
         self.canvas.grid(row=2, column=0, columnspan=6)
-        self.scrollbar = ttk.Scrollbar(self.current_main_frame, orient="vertical", command=self.canvas.yview)
+        self.scrollbar = ttk.Scrollbar(master, orient="vertical", command=self.canvas.yview)
         self.scrollbar.grid(row=0, column=7, rowspan=3, sticky="ns")
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.canvas.bind('<Configure>', lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
@@ -172,24 +188,24 @@ class planet_ui:
 
 
 
-    def create_label_column(self, master, frame_height, columns, value_array, label_height, label_with, text_size, columns_amount):
+    def create_label_column(self, master, frame_height, columns, value_array, text_size, columns_amount):
         current_frame = tk.Frame(master, bg="white", borderwidth=2, relief="solid", height=frame_height - 50, width=1199 / columns_amount)
         current_frame.grid_propagate(False)
         current_frame.grid(row=0, column=columns)
         if(value_array[0] == "L"):
 
             for index, value in enumerate(value_array[1]):
-                self.create_label(index, value, current_frame, label_height, label_with, text_size)
+                self.create_label(index, value, current_frame, text_size)
         elif(value_array[0] == "B"):
             for index, value in enumerate(value_array[1]):
-                self.create_button(index, value, current_frame, label_height, label_with, text_size)
+                self.create_button(index, value, current_frame, text_size)
             pass
         elif(value_array[0] == "E"):
             for index, value in enumerate(value_array[1]):
-                self.create_entry(index, value, current_frame, label_height, label_with, text_size)
+                self.create_entry(index, value, current_frame, text_size)
             pass
 
-    def create_label(self, row, value, master, label_height, label_with, text_size):
+    def create_label(self, row, value, master, text_size):
         if(row == 0):
             master.grid_columnconfigure(row, weight=1)
            
@@ -203,7 +219,7 @@ class planet_ui:
     
     
     
-    def create_button(self, row, value, master, label_height, label_with, text_size):
+    def create_button(self, row, value, master, text_size, button_text="Build"):
         if(row == 0):
             master.grid_columnconfigure(row, weight=1)
             
@@ -212,11 +228,11 @@ class planet_ui:
         else:
             master.grid_columnconfigure(row, weight=1)
             master.grid_rowconfigure(row, weight=1)
-            player_button = tk.Button(master, bg="orange",  font=("Arial", text_size), text="Build", command=value)
+            player_button = tk.Button(master, bg="orange",  font=("Arial", text_size), text=button_text, command=value)
             player_button.grid(row=row, column=0)
     
 
-    def create_entry(self, row, value, master, label_height, label_with, text_size):
+    def create_entry(self, row, value, master, text_size):
         if(row == 0):
             master.grid_columnconfigure(row, weight=1)
            
@@ -239,11 +255,104 @@ class planet_ui:
 
 
 
+#__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#                                                                                                               ship building frame
+
+
+
+    def design_page_popup(self, page_name):
+        current_design_page = tk.Tk( className=f"{page_name}")
+        current_design_page.geometry("1100x800+200+100")
+        current_design_page.config(bg="white")
+        
+       
+        self.design_ship_page(current_design_page)
+        current_design_page.mainloop()
+
+
+
+    def design_ship_page(self, master):
+        current_frame = tk.Frame(master, bg="white", width=1000, height=700)
+        current_frame.grid_propagate(False)
+        current_frame.columnconfigure(0, weight=1)
+        current_frame.grid(row=0, column=0, padx=50, pady=50) 
+        choose_engine_label = tk.Label(current_frame, bg="white", font=("Arial", 12), text= "Choose ship type")
+        choose_engine_label.grid(row=0, column=0)
+        ships_researched_list = self.check_if_researched(gs.get("ship_stats").get("ship_type"))
+        ship_type_menu = self.dropdown_menu(current_frame, ships_researched_list, 1, 0)
+        ship_type_menu.bind("<<ComboboxSelected>>", lambda event=None:self.design_ship_main_frame(current_frame, ship_type_menu.get()))
 
 
 
 
+    
 
+    def dropdown_menu(self, master, value, row, column):
+        drop_down_menu =ttk.Combobox(master, values=value)
+        drop_down_menu.grid(row=row, column=column)
+        return drop_down_menu 
+    
+
+    def dropdown_menu_with_label(self, master, row, column, value, text):
+        drop_down_frame = tk.Frame(master, bg="white")
+        drop_down_label = tk.Label(drop_down_frame, bg="white", font=("Arial", 14), text=text)
+        drop_down_label.pack()
+        drop_down_menu =ttk.Combobox(drop_down_frame, values=value)
+        drop_down_menu.pack()
+        drop_down_frame.grid(row=row, column=column)
+        drop_down_frame.bind("<<ComboboxSelected>>", lambda event=None:self.freighter_stats_frame(master, self.choose_engine_value.get(), self.choose_hull_value.get(), self.choose_fuel_tank_value.get(), self.cargo_capacity.get()))
+        return drop_down_menu
+    
+    def entry_with_label(self, master, row, column, text):
+        entry_frame = tk.Frame(master, bg="white")
+        entry_label = tk.Label(entry_frame, bg="white", font=("Arial", 14), text=text)
+        entry_label.pack()
+        entry_menu =ttk.Entry(entry_frame)
+        entry_menu.pack()
+        entry_frame.grid(row=row, column=column)
+        return entry_menu
+
+    def design_ship_main_frame(self, master, type):
+        design_main_frame = tk.Frame(master, bg="white", borderwidth=2, relief="solid", width=900, height=600)
+        design_main_frame.grid_propagate(False)
+        design_main_frame.grid(row=2, column=0)
+        self.choose_engine_value = self.dropdown_menu_with_label(design_main_frame, 1, 0, self.check_if_researched(gs.get("engine_stats").get("engine_types")), "Engine")
+        self.choose_hull_value = self.dropdown_menu_with_label(design_main_frame, 1, 1, self.check_if_researched(gs.get("ship_stats").get("hull_types")), "Ship hull")
+        self.choose_fuel_tank_value = self.dropdown_menu_with_label(design_main_frame, 1, 2, self.check_if_researched(gs.get("fuel_tank_stats").get("fuel_types")), "Fuel tank")
+        if(type == "freighter"):
+            self.cargo_capacity =  self.entry_with_label(design_main_frame, 2, 0, "Cargo size")
+            # refresh_button = btn(design_main_frame,background_color="orange", text_add="Refresh", command=lambda event=None:self.freighter_stats_frame(master, self.choose_engine_value.get(), self.choose_hull_value.get(), self.choose_fuel_tank_value.get(), self.cargo_capacity.get()) )
+            self.freighter_stats_frame(design_main_frame, self.choose_engine_value.get(), self.choose_hull_value.get(), self.choose_fuel_tank_value.get(), self.cargo_capacity.get())
+            
+        if(type == "scout"):
+          pass     
+
+
+
+
+        column_amount_list = self.count_columns(design_main_frame.winfo_children())
+        frame_label = tk.Label(design_main_frame, bg="white", font=("Arial", 20), text=type).grid(row=0, column=0, columnspan= len(column_amount_list))
+        
+        design_main_frame.columnconfigure(column_amount_list, weight=1)
+
+
+
+    def check_if_researched(self, list):
+        return_list = []
+        for key in list:
+            if(list[key].get("researched")):
+                return_list.append(key)
+        return return_list
+
+
+
+#__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#                                                                                                               freighter stats frame
+
+
+    def freighter_stats_frame(self, master, engine_value, hull_value, fuel_tank_value, cargo_size):
+        # column_span = self.count_columns(master.winfo_children())
+        freighter_stats_frame = tk.Frame(master, bg="white").grid(row=3, column=1)
 
 
 
@@ -267,28 +376,32 @@ class planet_ui:
     def create_planet_side_bar(self, master):
         self.button_list = []
         self.planet_sidebar_frame = tk.Frame(master, bg="white")
-        
+        print()
         
 
         #stats button
-        self.stats_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Mining stats", width=15, command=lambda:self.mining_stats_page())
+        self.stats_button = btn(self.planet_sidebar_frame, background_color="orange", text_add="Mining stats", width=15, command=lambda:self.mining_stats_page())
         self.button_list.append(self.stats_button)
 
         #build button
-        self.build_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Build", width=15, command=lambda:self.buidling_stats_page())
+        self.build_button = btn(self.planet_sidebar_frame, background_color="orange", text_add="Build", width=15, command=lambda:self.buidling_stats_page())
         self.button_list.append(self.build_button)
         
-                
-        self.build_order_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Building orders", width=15, command=lambda:self.building_order_page())
+        # build order button        
+        self.build_order_button = btn(self.planet_sidebar_frame, background_color="orange", text_add="Building orders", width=15, command=lambda:self.building_order_page())
         self.button_list.append(self.build_order_button)
 
         #Technologies button
-        self.Technologies_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Technologies", width=15)
+        self.Technologies_button = btn(self.planet_sidebar_frame, background_color="orange", text_add="Technologies", width=15)
         self.button_list.append(self.Technologies_button)
 
-        #ship button
-        self.ship_button = btn(self.planet_sidebar_frame, background_coller="orange", text_add="Ship_build", width=15)
-        self.button_list.append(self.ship_button)
+        #ship build button
+        self.ship_build_button = btn(self.planet_sidebar_frame, background_color="orange", text_add="Ship build", width=15, command=lambda:self.ship_building_page())
+        self.button_list.append(self.ship_build_button)
+        
+        #ship designe button
+        self.ship_design_button = btn(self.planet_sidebar_frame, background_color="orange", text_add="Ship design", width=15, command=lambda:self.ship_design_page())
+        self.button_list.append(self.ship_design_button)
         
 
         for index, buttons in enumerate(self.button_list):
@@ -314,12 +427,17 @@ class planet_ui:
         return return_string
 
 
+    def count_columns(self, childrien):
+        highest_number = 0
+        for value in childrien:
+           if(value.grid_info().get("column") > highest_number):
+               highest_number = value.grid_info().get("column")
+        return [i for i in range(0, highest_number + 1)]
 
     def Check_for_main_frame(self):
         if hasattr(self, "current_main_frame"):
             self.current_main_frame.destroy()
         
-
 
 
 

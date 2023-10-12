@@ -3,12 +3,12 @@ import tkinter as tk
 def test_command():
     print("planets_in_system_frame")
 
-def button_creation(master, width=True, text_add="blanck", font_size=15, font_type="Arial", background_coller="white", height=2, command=test_command):
+def button_creation(master, width=True, text_add="blanck", font_size=15, font_type="Arial", background_color="white", height=2, command=test_command):
     if(width == True):
-        btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_coller,  padx=15, pady=15, command=command, justify="center")
+        btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_color,  padx=10, pady=10, command=command, justify="center")
         return btn
     
-    btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_coller,  padx=15, pady=15, width=width, height=height, command=command, justify="center")
+    btn = tk.Button(master, text=text_add, font=(font_type, font_size), bg=background_color,  padx=10, pady=10, width=width, height=height, command=command, justify="center")
     return btn
 
 

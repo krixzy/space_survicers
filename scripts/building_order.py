@@ -23,19 +23,21 @@ class Building_order:
         self.accumulated_building_power += building_power
         self.calculate_building_percentage(building_cost)
         while (self.accumulated_building_power >= building_cost):
+            if(self.buildings_to_build == "factory"):
+                current_building = getattr(self.master, f"total_{self.buildings_to_build}")
+                current_building += 1
+                setattr(self.master, f"total_{self.buildings_to_build}", current_building)
             current_building = getattr(self.master, self.buildings_to_build)
             current_building += 1
             setattr(self.master, self.buildings_to_build, current_building)
             self.accumulated_building_power -= building_cost
             self.amount -= 1
             self.calculate_building_percentage(building_cost)
-            self.ui_page.update_planet()
 
 
             if(self.amount <= 0):
                 self.master.factory += self.factory_assigned
                 self.master.kill_order(self.id)
-                self.ui_page.update_planet()
                 self.accumulated_building_power = 0
                 
 
